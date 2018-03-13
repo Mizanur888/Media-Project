@@ -2,8 +2,8 @@
 
     $dbServerName = 'Localhost';
     $dbUserName = 'root';
-    $dbPasword = '';
-    $dbName = '';
+    $dbPasword = '1234';
+    $dbName = 'userLoginData';
 
     $connection = mysqli_connect($dbServerName, $dbUserName, $dbPasword, $dbName);
 
@@ -12,4 +12,6 @@
         echo 'mysqli connection, not connected with server';
 
     }
+
+
  ?>

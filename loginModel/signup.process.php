@@ -1,29 +1,42 @@
 <?php
   include_once 'appacheConnection.php';
-  include_once 'createTable.php';
-    $first = mysqli_real_escape_string($connection,$_POST['first']);
-    $last = mysqli_real_escape_string ($connection, $_POST['last']);
-    $email = mysqli_real_escape_string($connection, $_POST['email']);
-    $uid = mysqli_real_escape_string($connection, $_POST['uid']);
-    $password = mysqli_real_escape_string($connection, $_POST['password']);
-    $confromPassword = mysqli_real_escape_string($connection, $_POPST['confromPassword']);
+  //include_once 'createTable.php';
+
 
     if(isset($_POST['submit'])){
+          $first = mysqli_real_escape_string($connection,$_POST['first']);
+          $last = mysqli_real_escape_string ($connection, $_POST['last']);
+          $email = mysqli_real_escape_string($connection,$_POST['email']);
+          $uid = mysqli_real_escape_string($connection, $_POST['uid']);
+          $password = mysqli_real_escape_string($connection, $_POST['password']);
+          $confromPassword = mysqli_real_escape_string($connection, $_POST['confromPassword']);
 
-          if(validation){
+          if(empty($first) || empty($last) || empty($email) || empty($uid) || empty($password)){
 
-            $sql = "SELECT * FROM users WHERE uid = '$uid'";
+			         exit();
+		        }
+            else  if(!preg_match("/^[a-zA-Z]*$/", $first)||!preg_match("/^[a-zA-Z]*$/", $last)){
+			         exit();
+            }
+				            //check if emsil is valied
+				   else  if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
+					     exit();
+				    }
+
+         else{
+            $sql = "SELECT * FROM user WHERE uid = '$uid'";
             $result = mysqli_query($connection, $sql);
             $resultcheck = mysqli_num_rows($result);
             if($resultcheck>0){
               echo 'Already Exist account name'.$uid.'choose another name to open a account';
             }
+
             else{
                   if($password == $confromPassword){
                     $hashpswd = password_hash($password, PASSWORD_DEFAULT);
-                    $sql = "INSERT INTO 'users' ('first','last','email','uid','password')
-                            values('$first', '$last', '$email', '$uid', '$hashpswd');";
+                    $sql = "INSERT INTO `user`(`first`, `last`, `email`, `uid`, `password`, `confromPassword`) VALUES ('$first','$last','$email','$uid','$hashpswd','$hashpswd')";
                     mysqli_query($connection, $sql);
+                    header("Localhost:loginModel.php);
                     exit();
                   }
                   else{
@@ -32,11 +45,13 @@
                   }
 
             }
-          }
-    }
+
+          $connection->close();
+        }
+      }
 
 
-  functioin validation(){
+  /*functioin validation(){
 
       if(empty($first) || empty($last) || empty($email) || empty($uid) || empty($password) || empty($confromPassword)){
 
@@ -53,5 +68,5 @@
       else {
               //TODO-Generate Error Message for user
        }
-  }
+  }*/
 ?>
